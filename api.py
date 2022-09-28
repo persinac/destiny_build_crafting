@@ -21,6 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# to start: uvicorn api:app --reload
 
 @app.post("/api/build")
 async def build(info: Request):
