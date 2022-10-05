@@ -1,4 +1,5 @@
 import json
+import logging
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,7 +28,7 @@ app.add_middleware(
 async def build(info: Request):
     if await info.body():
         req_info = await info.json()
-        print(req_info)
+        logging.info(req_info)
         ret_val = build_my_stuff(req_info['mod_ids'])
         response = {
             "status": "SUCCESS",
@@ -35,7 +36,7 @@ async def build(info: Request):
         }
     else:
         response = {"status": "SUCCESS"}
-    print(response)
+    logging.info(response)
     return response
 
 
@@ -46,8 +47,7 @@ def mods(info: Request):
         "status": "SUCCESS",
         "data": json.loads(mod_list_df.to_json(orient="records"))
     }
-
-    print(response)
+    logging.info(response)
     return response
 
 
@@ -58,5 +58,5 @@ async def mods_attributes(info: Request):
         "status": "SUCCESS",
         "data": json.loads(mod_attribute_list.to_json(orient="records"))
     }
-    print(response)
+    logging.info(response)
     return response
