@@ -12,7 +12,10 @@ app = FastAPI()
 origins = [
     "http://localhost",
     "http://localhost:8080",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://destinybuildcraft.io",
+    "https://destinybuildcraft.io",
+    "destinybuildcraft.io"
 ]
 
 app.add_middleware(
