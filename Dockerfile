@@ -1,4 +1,7 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
+RUN apt update
+RUN apt-get install vim -y
+RUN apt-get install lsof -y
 WORKDIR /app
 COPY . /app
 RUN pip install -r requirements.txt

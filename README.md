@@ -19,13 +19,21 @@ Getting fancy?
 ``docker build -t destinybuildcraft:latest .``
 
 ### Start the container
-``docker run --name destinybuildcraft -p 5000:5000 destinybuildcraft:latest``
+
+#### Background
+``docker run --name destinybuildcraft -d -p 3001:5000 destinybuildcraft:latest``
+
+#### Blocking
+``docker run --name destinybuildcraft -p 3001:5000 destinybuildcraft:latest``
 
 ### Stop the container
 ``docker stop destinybuildcraft``
 
 ### Remove the container
 ``docker rm destinybuildcraft``
+
+### Access the container
+``docker exec -it destinybuildcraft /bin/bash``
 
 ### TODO
 Link the volume so that we don't have to rebuild the container locally

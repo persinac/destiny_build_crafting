@@ -12,9 +12,7 @@ app = FastAPI()
 origins = [
     "http://localhost",
     "http://localhost:8080",
-    "http://localhost:8000",
-    "https://master.d2aqlj5l8gh76q.amplifyapp.com",
-    "http://master.d2aqlj5l8gh76q.amplifyapp.com",
+    "http://localhost:3000"
 ]
 
 app.add_middleware(
