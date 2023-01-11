@@ -12,6 +12,8 @@ class Wells:
         self._mod_attribute_list = pq.read_table('mappings/mod_attribute_list_wells.parquet.gzip').to_pandas()
         self._all_copy_mods = self._mod_attribute_list.loc[self._mod_attribute_list['counts_as_copy'] == 1]
 
+        # filter equipped mods to only well mods and use that in build_well_stuff()
+
     def calculate_count_as_copy_stacks(self, item: dict) -> dict:
         if len(self._all_copy_mods.loc[self._all_copy_mods['mod_id'] == item['mod_id']]) == 0:
             x = sum((self._all_copy_mods['mod_id'] == i).any() for i in list(set(self._equipped_mods)))  # len of UNIQUE copy mods
@@ -66,6 +68,9 @@ class Wells:
                 item = self.calculate_count_as_copy_stacks(item)
 
                 self.calculate_stacked_mod(curr_mod, item)
+
+        # this won't work until we filter out only applicable WELL mods
+        return {'wells': obj_list}
 
 
 if __name__ == '__main__':

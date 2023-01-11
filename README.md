@@ -13,7 +13,7 @@ Straight up local dev?
 ``uvicorn api:app --reload``
 
 ## Docker
-Getting fancy?
+Getting fancy? 
 
 ### Build the image
 ``docker build -t destinybuildcraft:latest .``
