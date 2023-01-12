@@ -12,13 +12,16 @@ class ChargedWithLight:
         self._mod_attribute_list = pq.read_table('mappings/mod_attribute_list_cwl.parquet.gzip').to_pandas()
         self._assume_subclass_match = subclass_match
 
-        # filter equipped mods to only CWL mods and use that in build_cwl_stuff()
-
     def subclass_match_elemental_charge(self, mod_id: int, obj: dict):
-        # 18
         if mod_id == 18 and self._assume_subclass_match:
             obj['curr_value'] = 2
             obj['notes'] = "Only gain 2 stacks IF collect well of same sub-class element, else gain 1 stack"
+
+        return obj
+
+    def subclass_match_striking_light(self, mod_id: int, impact_id: int, obj: dict):
+        if mod_id == 45 and impact_id == 26:
+            obj['notes'] = "This is only active when at least one other Arc mod is socketed into this armor, or when at least one other Arc Charged With Light mod is socketed into another piece of armor you are wearing."
 
         return obj
 
@@ -41,7 +44,7 @@ class ChargedWithLight:
 
         return curr_value
 
-    def calculate_stacked_mod(self, list_of_attributes: pandas.DataFrame, curr_obj: dict, reference_attr: dict) -> dict:
+    def calculate_stacked_mod(self, list_of_attributes: pandas.DataFrame, curr_obj: dict, reference_attr: dict, impact_id: int) -> dict:
         """Given a mapped mod with counts, calculate the stacked value
 
         Parameters
@@ -57,6 +60,7 @@ class ChargedWithLight:
         try:
             curr_obj['curr_value'] = self.calculate_stack_value(reference_attr['stack'], list_of_attributes)
             self.subclass_match_elemental_charge(reference_attr['mod_id'], curr_obj)
+            self.subclass_match_striking_light(reference_attr['mod_id'], impact_id, curr_obj)
         except Exception as e:
             curr_mod_name = curr_obj['name']
             print(f'Mod: {curr_mod_name} does not stack and is not enabled by anything to stack. Skipping.')
@@ -64,6 +68,7 @@ class ChargedWithLight:
         return curr_obj
 
     def build_cwl_stuff(self, obj_list: List[dict]):
+        copy_of_obj_list = []
         for item in obj_list:
             curr_mod = self._mod_attribute_list.loc[self._mod_attribute_list['mod_id'] == item['mod_id']]
             if len(curr_mod) > 0:
@@ -79,13 +84,13 @@ class ChargedWithLight:
                         self.calculate_stacked_mod(mod_by_impact, temp, item)
                         impact_list.append(temp)
                     elif mod_by_impact.iloc[0]['cwl_subclass_match'] == 0:
-                        self.calculate_stacked_mod(mod_by_impact, temp, item)
+                        self.calculate_stacked_mod(mod_by_impact, temp, item, impact_id)
                         impact_list.append(temp)
 
                 item['impact'] = impact_list
+                copy_of_obj_list.append(item)
 
-        # this won't work until we filter out only applicable CWL mods
-        return {'cwl': obj_list}
+        return copy_of_obj_list
 
 
 if __name__ == '__main__':

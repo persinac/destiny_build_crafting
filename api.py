@@ -33,7 +33,7 @@ async def build(info: Request):
     if await info.body():
         req_info = await info.json()
         logging.info(req_info)
-        ret_val = build_my_stuff(req_info['mod_ids'])
+        ret_val = build_my_stuff(req_info['mod_ids'], subclass_match=req_info['same_subclass'])
         response = {
             "status": "SUCCESS",
             "data": ret_val
